@@ -190,6 +190,79 @@
     if (options.viewport.border.enable) {
       let viewport_border = (container.offsetWidth - options.viewport.width) / 2
       options.viewport.border.width = viewport_border < options.viewport.border.width ? viewport_border : options.viewport.border.width
+  
+      if (options.viewport.border.handles.enable) {
+        const topRightHandle = this.properties.topRightHandle = this.properties.topRightHandle || document.createElement('div');
+        topRightHandle.className = 'viewport__handle viewport__top-right-handle';
+        topRightHandle.style.position = 'absolute';
+        topRightHandle.style.top   = -(options.viewport.border.handles.size / 2) + 'px';
+        topRightHandle.style.right = -(options.viewport.border.handles.size / 2) + 'px';
+        topRightHandle.style.height = topRightHandle.style.width = options.viewport.border.handles.size + 'px';
+        topRightHandle.style.backgroundColor = options.viewport.border.color;
+        topRightHandle.style.cursor = 'nesw-resize';
+        topRightHandle.style.pointerEvents = 'auto';
+        topRightHandle.style.touchAction = 'none';
+  
+        viewport.appendChild(topRightHandle);
+        
+        (function (handle) {
+          handle.addEventListener('mousedown',  startHandler);
+          handle.addEventListener('touchstart', startHandler);
+          
+          let isDragging = false;
+          function startHandler(ev) {
+            ev.preventDefault();
+            
+            isDragging = true;
+  
+            document.addEventListener('mousemove', moveHandler);
+            document.addEventListener('touchmove', moveHandler);
+            document.addEventListener('mouseup',  endHandler);
+            document.addEventListener('touchend', endHandler);
+          }
+          function moveHandler(ev) {
+            if (!isDragging) return;
+            ev.preventDefault();
+    
+            const containerPosition = container.getBoundingClientRect();
+            const oldPosition       = viewport.getBoundingClientRect();
+            
+            const {clientX, clientY} = ev.touches ? ev.touches[0] : ev;
+            
+            const dx = clientX - oldPosition.right;
+            const dy = oldPosition.top - clientY;
+    
+            if (options.viewport.border.handles.preserveAspectRatio) {
+              const ratio = options.viewport.width / options.viewport.height;
+      
+              const newWidth  = Math.min(oldPosition.width + dx, containerPosition.width);
+              const newHeight = Math.round(newWidth / ratio);
+      
+              viewport.style.height = newHeight + 'px';
+              viewport.style.width  = newWidth  + 'px';
+            } else {
+              viewport.style.height = Math.min(oldPosition.height + dy, containerPosition.height) + 'px';
+              viewport.style.width  = Math.min(oldPosition.width  + dx, containerPosition.width)  + 'px';
+            }
+          }
+          function endHandler() {
+            options.viewport.height = parseInt(viewport.style.height);
+            options.viewport.width  = parseInt(viewport.style.width);
+            
+            isDragging = false;
+  
+            document.removeEventListener('mousemove', moveHandler);
+            document.removeEventListener('touchmove', moveHandler);
+            document.removeEventListener('mouseup',  endHandler);
+            document.removeEventListener('touchend', endHandler);
+          }
+        })(topRightHandle);
+      } else {
+        if (this.properties.topRightHandle) {
+          this.properties.topRightHandle.parentNode.removeChild(this.properties.topRightHandle);
+          delete this.properties.topRightHandle;
+        }
+      }
     } else {
       options.viewport.border.width = 0
     }
@@ -611,7 +684,12 @@
       border: {
         enable: true,
         width: 2,
-        color: '#fff'
+        color: '#fff',
+        handles: {
+          enable: true,
+          preserveAspectRatio: true,
+          size: 10
+        }
       }
     },
     transformOrigin: 'viewport',

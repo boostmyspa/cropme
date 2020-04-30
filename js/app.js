@@ -11,11 +11,16 @@ new Vue({
       viewport: {
         width: 200,
         height: 200,
-        type: 'circle',
+        type: 'square',
         border: {
           width: 2,
           enable: true,
-          color: '#fff'
+          color: '#fff',
+          handles: {
+            enable: true,
+            preserveAspectRatio: true,
+            size: 10
+          }
         }
       },
       zoom: {

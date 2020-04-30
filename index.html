@@ -14,7 +14,6 @@
 
     <link rel="stylesheet" href="dist/cropme.css">
     <title>Cropme | a javascript image cropper</title>
-    </style>
 </head>
 
 <body>
@@ -123,6 +122,26 @@
                                     <option value="#f00">red</option>
                                     <option value="#00f">bleu</option>
                                 </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="options">
+                        <div class="title">Handles</div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                enable: <select class="form-control" v-model="options.viewport.border.handles.enable">
+                                <option :value="true">true (default)</option>
+                                <option :value="false">false</option>
+                            </select>
+                            </div>
+                            <div class="col-md-4">
+                                preserve aspect ratio: <select class="form-control" v-model="options.viewport.border.handles.preserveAspectRatio">
+                                <option :value="true">true (default)</option>
+                                <option :value="false">false</option>
+                            </select>
+                            </div>
+                            <div class="col-md-4">
+                                size: <input type="number" class="form-control" v-model="options.viewport.border.handles.size">
                             </div>
                         </div>
                     </div>

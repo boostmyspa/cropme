@@ -147,6 +147,10 @@ container: {
     - **enable** (`bool`, default: `true`): *toggle the border*
     - **width** (`int`, default: `2`): *the border width*
     - **color** (`string`, unit: `hex, rgba, hsl`, default: `#fff`): *the border color*
+    - **handles** (`object`): *handles*
+      - **enable** (`bool`, default: `true`): *toggle handles*
+      - **preserveAspectRatio** (`bool`, default: `true`): *preserve aspect ratio of the viewport*
+      - **size** (`int`, default: `10`): *size of handles*
 
 #### Example
 
